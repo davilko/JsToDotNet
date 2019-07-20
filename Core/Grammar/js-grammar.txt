@@ -2,7 +2,35 @@
 program             = sourceElement? EOF
 sourceElement       = import | statement
 import              = "import" namespace
-namespace           = identifier
+namespace           = identifier ("." identifier)?
+
+// TYPES
+typeAlias           = "type" identifier typeParameters? "=" type 
+typeParameters      = "<" typeParameterList ">"
+typeParameterList   = type ("," type)*
+typeArguments       = typeParameters
+
+typeAnnotation      = ":" type
+
+type                = union | functionType | primaryType 
+
+union               = primaryType | primaryType
+                        
+primaryType         = predefinedType | typeReference | objectType | arrayType
+
+predefinedType      = 'any'
+                       | 'number'
+                       | 'boolean'
+                       | 'string'
+                       | 'void'
+
+typeReference       = typeName (typeArguments)?
+typeName            = identifier | namespace
+
+functionType        = typeParameters? '(' parameterList? ')' '=>' type
+objectType          = "{" typeBody? "}"
+typeBody            = propertySignatur 
+propertySignatur    = identifier '?'? typeAnnotation?
 
 statement           =  block
                         | variableStatement
@@ -24,7 +52,7 @@ block               = "{" statementList? "}"
 statementList       = statement+
 
 // LET & VAR
-variableStatement   = varModifier identifier "=" singleExpression
+variableStatement   = varModifier identifier typeAnnotation? "=" singleExpression
 varModifier         = "let" | "var" | "const"
 
 // CLASS
@@ -53,10 +81,10 @@ catchProduction     = "catch" "(" identifier ")" block
 finallyProduction   = "finally" block
 
 // FUNCTION
-functionDeclaration = "function" identifier "(" parameterList? ")" "{" functionBody "}"
+functionDeclaration = "function" identifier typeParameters? "(" parameterList? ")" "{" functionBody "}"
 parameterList       = simpleArgs ("," simpleArgs)* restArgs?
-simpleArgs          = identifier ("=" singleExpression)?
-restArgs            = "..." identifier
+simpleArgs          = identifier typeAnnotation? ("=" singleExpression)?
+restArgs            = "..." identifier typeAnnotation?
 functionBody        = statement?
 
 // MEMBER ACCESSOR
@@ -68,7 +96,7 @@ newExpression              = newObjectLiteralExpression
                             | newArrayLiteralExpression
                             | ("new" (newArrayExpression | newClassExpression))
                             
-newArrayExpression         = "Array" "(" ")"
+newArrayExpression         = "Array" typeParameters? "(" ")"
 newClassExpression         = identifier "(" parameterList? ")"
 newObjectLiteralExpression = "{" (propertyAssignment ("," propertyAssignment)*)? ","? "}"
 propertyAssignment         = simplePropertyAssignment | computedPropertyAssignment

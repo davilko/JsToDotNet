@@ -3,17 +3,17 @@ namespace Core
     public struct TokenLocation
     {
         public readonly int Line;
-        public readonly int Offset;
+        public readonly int Column;
 
-        public TokenLocation(int line, int offset)
+        public TokenLocation(int line, int column)
         {
             Line = line;
-            Offset = offset;
+            Column = column;
         }
 
         public override string ToString()
         {
-            return $"Line: {Line} Offset: {Offset}";
+            return $"Line: {Line} Column: {Column}";
         }
     }
 }

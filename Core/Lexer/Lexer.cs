@@ -8,7 +8,7 @@ namespace Core
     public partial class Lexer : ITokenSource
     {
         private int _line;
-        private int _offset;
+        private int _column;
         private int _position;
         private string _source;
 
@@ -16,7 +16,7 @@ namespace Core
         {
             _source = source;
             _line = 1;
-            _offset = 1;
+            _column = 1;
             _position = 0;
         }
 
@@ -190,18 +190,18 @@ namespace Core
         private void Skip(int charCount = 1)
         {
             _position += charCount;
-            _offset += charCount;
+            _column += charCount;
         }
 
         private void NewLine()
         {
             _line++;
-            _offset = 1;
+            _column = 1;
         }
 
-        private TokenLocation CurrentTokenLocation => new TokenLocation(_line, _offset);
+        private TokenLocation CurrentTokenLocation => new TokenLocation(_line, _column);
         
-        private TokenLocation CalculateTokenLocation(int tokenLength) => new TokenLocation(_line, _offset + tokenLength);
+        private TokenLocation CalculateTokenLocation(int tokenLength) => new TokenLocation(_line, _column + tokenLength);
 
         public IEnumerator<Token> GetEnumerator()
         {
