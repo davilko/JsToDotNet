@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Core
+namespace Core.Lexer
 {
-    public partial class Lexer : ITokenSource
+    public partial class Lexer : IEnumerable<Token>
     {
         private int _line;
         private int _column;
@@ -41,6 +41,7 @@ namespace Core
             
             var token = ProcessStaticToken(KeywordTokens)
                         ?? ProcessStaticToken(LiteralTokens)
+                        ?? ProcessStaticToken(SymbolTokens)
                         ?? ProcessStaticToken(OperatorTokens)
                         ?? ProcessRegexToken(LiteralTokensRegex);
             

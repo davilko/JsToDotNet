@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using Core.Lexer;
 using NUnit.Framework;
 
 namespace Core.Tests.Lexer
@@ -19,7 +21,7 @@ namespace Core.Tests.Lexer
             };
             
             var code = "let a = 1";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -35,16 +37,22 @@ namespace Core.Tests.Lexer
             var expected = new[]
             {
                 TokenType.Function, 
+                TokenType.Int,
                 TokenType.Identifier, 
                 TokenType.ParenOpen, 
+                TokenType.Char,
+                TokenType.Identifier,
+                TokenType.Comma,
+                TokenType.Boolean,
+                TokenType.Identifier,
                 TokenType.ParenClose, 
                 TokenType.CurlyOpen,
                 TokenType.CurlyClose,
                 TokenType.Eof,
             };
             
-            var code = "function parseInt() {}";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            var code = "function int parseInt(char a, boolean b) {}";
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -64,7 +72,7 @@ namespace Core.Tests.Lexer
             
             var code = @"             
                         ";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -83,7 +91,7 @@ namespace Core.Tests.Lexer
             };
             
             var code = @"   // some comments    ";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -104,7 +112,7 @@ namespace Core.Tests.Lexer
             var code = @"   /* some comments    
                                bla bla bla
                             */";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -127,7 +135,7 @@ namespace Core.Tests.Lexer
             };
             
             var code = @" var a = 'text'";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -150,7 +158,7 @@ namespace Core.Tests.Lexer
             };
             
             var code = " var a = \"text\"";
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
 
             // Act
             var result = tokenSource.Select(t => t.Type).ToArray();
@@ -175,7 +183,7 @@ namespace Core.Tests.Lexer
             var code = @"'text bla bla
                           text continuation'";
             
-            ITokenSource tokenSource = new Core.Lexer(code);
+            IEnumerable<Token> tokenSource = new Core.Lexer.Lexer(code);
             
             // Act
             var tokens = tokenSource.ToArray();
